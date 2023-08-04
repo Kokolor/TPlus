@@ -33,7 +33,10 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    char tempFilesToDelete[10][100];
+    int tempFileIndex = 0;
     char line[256];
+
     while (fgets(line, sizeof(line), input))
     {
         if (strstr(line, "ADRESS ") == line)
@@ -84,6 +87,28 @@ int main(int argc, char *argv[])
             sscanf(line, "PUBLIC %s", name);
             fprintf(output, "global %s\n", name);
         }
+        else if (strstr(line, "INCLUDE ") == line)
+        {
+            char includedFileName[100];
+            sscanf(line, "INCLUDE \"%[^\"]\"", includedFileName);
+
+            char tempIncludedFile[120];
+            sprintf(tempIncludedFile, "%s_tmp.asm", includedFileName);
+            char command[200];
+            sprintf(command, "%s %s -o %s", argv[0], includedFileName, tempIncludedFile);
+            system(command);
+
+            fprintf(output, "%%include \"%s\"\n", tempIncludedFile);
+
+            strcpy(tempFilesToDelete[tempFileIndex], tempIncludedFile);
+            tempFileIndex++;
+        }
+        else if (strstr(line, "CALL ") == line)
+        {
+            char functionName[100];
+            sscanf(line, "CALL %s", functionName);
+            fprintf(output, "call %s\n", functionName);
+        }
         else if (strcmp(line, "RETURN\n") == 0)
         {
             fprintf(output, "ret\n");
@@ -120,6 +145,11 @@ int main(int argc, char *argv[])
         sprintf(command, "nasm -f bin %s -o %s", tempFileName, argv[3]);
         system(command);
         remove(tempFileName);
+    }
+
+    for (int i = 0; i < tempFileIndex; i++)
+    {
+        remove(tempFilesToDelete[i]);
     }
 
     return 0;
