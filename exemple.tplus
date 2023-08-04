@@ -1,0 +1,10 @@
+BITS 32
+CODE
+ADRESS video_memory = 0xB8000
+PUBLIC _start
+FUNC _start{
+        video_memory(0) = 'A'
+        video_memory(1) = 'B'
+
+        HALT
+}
