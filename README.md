@@ -13,3 +13,4 @@ git clone https://github.com/Kokolor/TPlus.git
 cd TPlus
 make install
 ```
+Note : If you are not using the 'root' account, you must add sudo before 'make install'.
