@@ -11,5 +11,5 @@ T+ is a high-level language designed for OS development, bridging the gap betwee
 ```bash
 git clone https://github.com/Kokolor/TPlus.git
 cd TPlus
-make install
+sudo make install
 ```
